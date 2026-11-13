@@ -99,7 +99,7 @@ function sumRegion(p,board,i,anchorOnly=false){
   }
   return {x,y,w,h,bits,count};
 }
-function components(region,minSize=15){
+export function sumComponents(region){
   const {w,h,bits}=region,seen=new Uint8Array(bits.length),out=[];
   for(let y=0;y<h;y++)for(let x=0;x<w;x++){
     let at=y*w+x;if(!bits[at]||seen[at])continue;
@@ -109,7 +109,10 @@ function components(region,minSize=15){
         const nx=px+dx,ny=py+dy,ni=ny*w+nx;
         if(nx>=0&&nx<w&&ny>=0&&ny<h&&bits[ni]&&!seen[ni]){seen[ni]=1;stack.push(ni);}
       }
-    }if(points.length>minSize)out.push(points);
+    }if(points.length>=8){
+      const ys=points.map(point=>point[1]);
+      if(Math.max(...ys)-Math.min(...ys)+1>=h*.35)out.push(points);
+    }
   }
   return out.sort((a,b)=>Math.min(...a.map(p=>p[0]))-Math.min(...b.map(p=>p[0])));
 }
@@ -122,12 +125,12 @@ function normalized(points){
 let sumTemplatesPromise;
 async function readSumTemplates(){if(!sumTemplatesPromise)sumTemplatesPromise=fetch('./sum-templates.json').then(r=>r.json());return sumTemplatesPromise;}
 function templateNumber(region,refs){
-  const parts=components(region).filter(a=>a.length>=20);
+  const parts=sumComponents(region);
   if(!parts.length||parts.length>2)return 0;
   let result='';for(const points of parts){const f=normalized(points);let best={digit:0,distance:Infinity};
     for(const ref of refs){let d=0;for(let k=0;k<768;k++)d+=Math.abs(f[k]-ref.pixels[k]);d/=768;if(d<best.distance)best={digit:ref.digit,distance:d};}
     if(best.distance>.36)return 0;result+=best.digit;
-  }return Number(result);
+  }const value=Number(result);return value>=1&&value<=45?value:0;
 }
 function detectCages(p,board,anchors){
   const parent=Array.from({length:81},(_,i)=>i);
@@ -242,7 +245,7 @@ export async function recognize(image,onProgress=()=>{}){
     const i=cages[k].anchor;if(i===undefined){uncertain.push(Math.min(...cages[k].cells));continue;}
     let sum=templateNumber(sumRegion(p,board,i),refs);
     if(!sum){try{worker??=await getWorker();const r=Math.floor(i/9),c=i%9;
-      const crop=makeCrop(p,{x:board.x+(c+.02)*step,y:board.y+(r+.015)*step,w:step*.36,h:step*.29},'sum');sum=await readNumber(worker,crop,'7');}catch{}}
+      const crop=makeCrop(p,{x:board.x+(c+.02)*step,y:board.y+(r+.015)*step,w:step*.36,h:step*.29},'sum');sum=await readNumber(worker,crop,'7');if(sum>45)sum=0;}catch{}}
     cages[k].sum=sum;if(!sum)uncertain.push(i);
     if(k%5===0)onProgress(`正在识别笼合计 ${k+1}/${cages.length}…`);
   }cages=attachNecessaryCells(cages,orphanGroups,cageEdges,grid).map(({anchor,...c})=>c);}

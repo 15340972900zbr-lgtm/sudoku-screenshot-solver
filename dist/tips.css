@@ -1,0 +1,15 @@
+.back-link{color:#176943;font-size:12px;font-weight:800;text-decoration:none}
+.tips-nav{display:flex;flex-wrap:wrap;gap:7px;margin:-4px 0 22px}
+.tips-nav a{padding:8px 11px;border:1px solid #d4e4d8;border-radius:10px;background:#fff;color:#336d4c;font-size:12px;font-weight:700;text-decoration:none}
+.tips-nav a:hover,.tips-nav a:focus-visible{background:#eaf5ed}
+.tips-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.tip-card{scroll-margin-top:18px;border:1px solid #dfe9df;border-radius:20px;background:#fff;padding:22px 20px;box-shadow:0 10px 30px rgba(19,70,48,.045)}
+.tip-no{font-size:11px;font-weight:800;letter-spacing:.11em;color:#6c9a78}
+.tip-card h2{margin:8px 0 10px;font-size:23px;color:#174535}
+.tip-card h3{margin:17px 0 7px;font-size:14px;color:#1a6d48}
+.tip-card p{margin:0;color:#557166;font-size:13px;line-height:1.75}
+.tip-card .rule{padding:10px 12px;border-radius:10px;background:#edf6ef;color:#255d40;font-weight:700}
+.tip-card .tip-note{margin-top:11px;color:#946b38;font-size:12px}
+.tips-end{text-align:center;margin:22px 0 6px}
+.tips-end a{display:inline-block;padding:13px 18px;border-radius:11px;background:#116a45;color:#fff;font-size:13px;font-weight:800;text-decoration:none}
+@media(max-width:640px){.tips-list{grid-template-columns:1fr}.tip-card{padding:19px 17px}.tips-nav{gap:6px}.tips-nav a{padding:7px 9px}}

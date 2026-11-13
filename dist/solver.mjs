@@ -2,12 +2,11 @@
 const FULL = 0x3fe;
 const bit = n => 1 << n;
 const digits = mask => { const out=[]; for(let n=1;n<=9;n++) if(mask&bit(n)) out.push(n); return out; };
-const peers = Array.from({length:81},(_,i)=>{
-  const r=Math.floor(i/9), c=i%9, box=Math.floor(r/3)*3+Math.floor(c/3);
-  const p=[]; for(let j=0;j<81;j++) if(j!==i){ const rr=Math.floor(j/9),cc=j%9;
-    if(rr===r||cc===c||Math.floor(rr/3)*3+Math.floor(cc/3)===box) p.push(j);
-  } return p;
-});
+const standardRegion=i=>Math.floor(Math.floor(i/9)/3)*3+Math.floor((i%9)/3);
+const windows=[
+  [1,1],[1,5],[5,1],[5,5]
+].map(([top,left])=>Array.from({length:9},(_,n)=>(top+Math.floor(n/3))*9+left+n%3));
+const windowAt=Array.from({length:81},(_,i)=>windows.filter(cells=>cells.includes(i)));
 const knights=Array.from({length:81},(_,i)=>{const r=Math.floor(i/9),c=i%9,a=[];
   for(const [dr,dc] of [[1,2],[1,-2],[-1,2],[-1,-2],[2,1],[2,-1],[-2,1],[-2,-1]]){
     const rr=r+dr,cc=c+dc;if(rr>=0&&rr<9&&cc>=0&&cc<9)a.push(rr*9+cc);
@@ -27,6 +26,25 @@ export function solvePuzzle(puzzle,limit=2){
   const board=puzzle.grid.map(Number), rules=puzzle.rules||{};
   const parity=puzzle.parity||Array(81).fill(0), cages=puzzle.cages||[], links=puzzle.links||[];
   if(board.length!==81||board.some(x=>!Number.isInteger(x)||x<0||x>9))return {error:'棋盘必须是 9×9，且只能填 1–9。'};
+  const regions=rules.irregular?puzzle.regions:Array.from({length:81},(_,i)=>standardRegion(i));
+  if(!Array.isArray(regions)||regions.length!==81||regions.some(x=>!Number.isInteger(x)||x<0||x>8))
+    return {error:'不规则宫需要给每格指定 1–9 宫。'};
+  if(rules.irregular){
+    for(let region=0;region<9;region++){
+      const cells=regions.map((v,i)=>v===region?i:-1).filter(i=>i>=0);
+      if(cells.length!==9)return {error:`第 ${region+1} 宫有 ${cells.length} 格；每宫必须恰好 9 格。`};
+      const visited=new Set([cells[0]]),queue=[cells[0]];
+      for(const i of queue)for(const j of [i-9,i+9,i%9?i-1:-1,i%9<8?i+1:-1])
+        if(cells.includes(j)&&!visited.has(j)){visited.add(j);queue.push(j);}
+      if(visited.size!==9)return {error:`第 ${region+1} 宫没有连成一片，请核对宫界。`};
+    }
+  }
+  const peers=Array.from({length:81},(_,i)=>{
+    const row=Math.floor(i/9),col=i%9,out=new Set();
+    for(let j=0;j<81;j++)if(j!==i&&(Math.floor(j/9)===row||j%9===col||regions[j]===regions[i]))out.add(j);
+    if(rules.window)for(const cells of windowAt[i])for(const j of cells)if(j!==i)out.add(j);
+    return [...out];
+  });
   if(rules.killer){
     const seen=new Set();for(const cage of cages){
       if(!Number.isInteger(cage.sum)||!Array.isArray(cage.cells)||!cage.cells.length)return {error:'请补全每个笼的格子与合计数。'};

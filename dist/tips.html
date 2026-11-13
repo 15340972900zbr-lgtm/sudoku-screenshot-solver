@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f5ef">
+  <meta name="description" content="学习经典、无马、杀手、对角线、奇偶、连续、不规则宫和窗口数独的独特技巧。">
+  <title>技巧教学 · 数独截图求解器</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./tips.css">
+</head>
+<body>
+<main class="shell">
+  <header class="top"><div class="brand"><span class="brand-mark">9<span>×</span>9</span><span>数独技巧教学</span></div><a class="back-link" href="./index.html">返回求解器 →</a></header>
+  <section class="intro">
+    <div class="eyebrow">看懂规则 · 缩小候选 · 找到下一步</div>
+    <h1>每种数独，<br><em>都有自己的突破口。</em></h1>
+    <p>先用行、列和宫排除候选数，再叠加题目中特有的限制。下面的例子都用“第几行第几列”描述格子。</p>
+  </section>
+  <nav class="tips-nav" aria-label="跳转到题型">
+    <a href="#classic">经典</a><a href="#anti-knight">无马</a><a href="#killer">杀手</a><a href="#diagonal">对角线</a>
+    <a href="#parity">奇偶</a><a href="#consecutive">连续</a><a href="#irregular">不规则宫</a><a href="#window">窗口</a>
+  </nav>
+  <section class="tips-list" aria-label="题型技巧">
+    <article class="tip-card" id="classic"><span class="tip-no">01 / 基础</span><h2>经典数独</h2><p class="rule">每行、每列、每个普通 3×3 宫都恰好包含 1–9。</p><h3>技巧：找唯一位置</h3><p>不要只看某格还能填什么，也看某个数字在一行、一列或一宫里还能放哪里。若第 4 宫的数字 7 只剩一个可放位置，那个位置就是 7。</p></article>
+    <article class="tip-card" id="anti-knight"><span class="tip-no">02 / 额外距离</span><h2>无马数独</h2><p class="rule">相同数字不能相隔国际象棋“马走日”的距离。</p><h3>技巧：从已知数向外排除</h3><p>若第 4 行第 4 列是 5，第 2 行第 3、5 列，第 3 行第 2、6 列等八个马步位置都不能再是 5。把这个限制与行、列、宫一起使用。</p></article>
+    <article class="tip-card" id="killer"><span class="tip-no">03 / 合计</span><h2>杀手数独</h2><p class="rule">虚线笼内数字相加等于角落的小数字，且同一笼内不重复。</p><h3>技巧：先列组合，再用 45 法则</h3><p>两格笼合计为 3，只能是 1 和 2；三格笼合计为 6，只能是 1、2、3。每行、每列和每个普通宫合计都是 45，可用已知笼和反推跨宫格子。</p><p class="tip-note">小合计数字容易漏掉细窄的“1”；上传后请重点核对笼角落的数字。</p></article>
+    <article class="tip-card" id="diagonal"><span class="tip-no">04 / 两条斜线</span><h2>对角线数独</h2><p class="rule">两条主对角线也各自恰好包含 1–9。</p><h3>技巧：把对角线当作额外的宫</h3><p>若一条对角线还缺 4 和 8，而其中一个空格所在列已有 4，那格只能是 8。中心格同时属于两条对角线，限制通常更强。</p></article>
+    <article class="tip-card" id="parity"><span class="tip-no">05 / 奇数与偶数</span><h2>奇偶数独</h2><p class="rule">圆圈格填奇数 1、3、5、7、9；方框格填偶数 2、4、6、8。</p><h3>技巧：先按奇偶缩小候选</h3><p>若某圆圈格所在行已出现 1、3、5、7，它只能是 9。奇偶标记本身不决定具体数字，但与普通数独排除法叠加后很有用。</p></article>
+    <article class="tip-card" id="consecutive"><span class="tip-no">06 / 相邻差一</span><h2>连续数独</h2><p class="rule">有标记的上下或左右相邻格数字相差 1。本工具也要求未标记的相邻格不相差 1。</p><h3>技巧：一正一反地用标记</h3><p>若标记一侧是 6，另一侧只能是 5 或 7；若两格之间没有标记，则不能组成 5–6 或 6–7 这样的连续对。先核对截图里的标记是否都被识别。</p></article>
+    <article class="tip-card" id="irregular"><span class="tip-no">07 / 变形的宫</span><h2>不规则宫数独</h2><p class="rule">九个不规则宫各有九格，每宫仍填 1–9；它们取代普通 3×3 宫。</p><h3>技巧：找行列与弯曲宫的交集</h3><p>某个数字若在一宫里只能落在同一行的两格，就可以从该行的其他宫排除它。弯曲边界会产生普通九宫格没有的交集。</p><p class="tip-note">求解器中打开“不规则宫”，再点“宫”按颜色编辑宫格；每宫须连成一片。</p></article>
+    <article class="tip-card" id="window"><span class="tip-no">08 / 四个额外区域</span><h2>窗口数独</h2><p class="rule">除普通宫外，棋盘里的四个额外 3×3 窗口也各填 1–9。</p><h3>技巧：利用重叠区域</h3><p>一个窗口与周围普通宫有重叠。若数字 6 在窗口中只能位于某个普通宫内，就可以从该宫的其他位置排除 6。求解器用浅色标出四个窗口。</p></article>
+  </section>
+  <div class="tips-end"><a href="./index.html">返回求解器，试一张截图 →</a></div>
+  <footer>识别结果要先核对；技巧说明以本工具采用的规则为准。</footer>
+</main>
+</body>
+</html>
